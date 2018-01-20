@@ -71,7 +71,7 @@ class SymbolicOperator(object):
 
     def isclose(self, other, rel_tol=EQ_TOLERANCE, abs_tol=EQ_TOLERANCE):
         """
-        Returns True if other (QubitOperator) is close to self.
+        Returns True if other (SymbolicOperator) is close to self.
 
         Comparison is done for each term individually. Return True
         if the difference between each term in self and other is
@@ -80,7 +80,7 @@ class SymbolicOperator(object):
         tolerance.
 
         Args:
-            other(QubitOperator): QubitOperator to compare against.
+            other(SymbolicOperator): SymbolicOperator to compare against.
             rel_tol(float): Relative tolerance, must be greater than 0.0
             abs_tol(float): Absolute tolerance, must be at least 0.0
         """
@@ -99,6 +99,104 @@ class SymbolicOperator(object):
             elif not abs(other.terms[term]) <= abs_tol:
                 return False
         return True
+
+    def __mul__(self, multiplier):
+        """Return self * multiplier for a scalar, or a SymbolicOperator.
+
+        Args:
+            multiplier: A scalar, or a SymbolicOperator.
+
+        Returns:
+            product (SymbolicOperator)
+
+        Raises:
+            TypeError: Invalid type cannot be multiply with SymbolicOperator.
+        """
+        if isinstance(multiplier, (int, float, complex, type(self))):
+            product = copy.deepcopy(self)
+            product *= multiplier
+            return product
+        else:
+            raise TypeError(
+                'Object of invalid type cannot multiply with ' + 
+                type(self) + '.')
+
+    def __iadd__(self, addend):
+        """In-place method for += addition of SymbolicOperator.
+
+        Args:
+            addend (SymbolicOperator): The operator to add.
+
+        Returns:
+            sum (SymbolicOperator): Mutated self.
+
+        Raises:
+            TypeError: Cannot add invalid type.
+        """
+        if isinstance(addend, type(self)):
+            for term in addend.terms:
+                if term in self.terms:
+                    if abs(addend.terms[term] +
+                           self.terms[term]) < EQ_TOLERANCE:
+                        del self.terms[term]
+                    else:
+                        self.terms[term] += addend.terms[term]
+                else:
+                    self.terms[term] = addend.terms[term]
+        else:
+            raise TypeError('Cannot add invalid type to ' + type(self) + '.')
+        return self
+
+    def __add__(self, addend):
+        """
+        Args:
+            addend (SymbolicOperator): The operator to add.
+
+        Returns:
+            sum (SymbolicOperator)
+        """
+        summand = copy.deepcopy(self)
+        summand += addend
+        return summand
+
+    def __isub__(self, subtrahend):
+        """In-place method for -= subtraction of SymbolicOperator.
+
+        Args:
+            subtrahend (A SymbolicOperator): The operator to subtract.
+
+        Returns:
+            difference (SymbolicOperator): Mutated self.
+
+        Raises:
+            TypeError: Cannot subtract invalid type.
+        """
+        if isinstance(subtrahend, type(self)):
+            for term in subtrahend.terms:
+                if term in self.terms:
+                    if abs(self.terms[term] -
+                           subtrahend.terms[term]) < EQ_TOLERANCE:
+                        del self.terms[term]
+                    else:
+                        self.terms[term] -= subtrahend.terms[term]
+                else:
+                    self.terms[term] = -subtrahend.terms[term]
+        else:
+            raise TypeError('Cannot subtract invalid type from ' + 
+                    type(self) + '.')
+        return self
+
+    def __sub__(self, subtrahend):
+        """
+        Args:
+            subtrahend (SymbolicOperator): The operator to subtract.
+
+        Returns:
+            difference (SymbolicOperator)
+        """
+        minuend = copy.deepcopy(self)
+        minuend -= subtrahend
+        return minuend
 
     def __rmul__(self, multiplier):
         """
