@@ -29,7 +29,30 @@ class SymbolicOperator(object):
     """
     """
 
-    def compress(self, abs_tol=1e-12):
+    @classmethod
+    def zero(cls):
+        """
+        Returns:
+            additive_identity (SymbolicOperator):
+                A symbolic operator o with the property that o+x = x+o = x for
+                all fermion operators x.
+        """
+        # Maybe throw a TypeError if called using SymbolicOperator? Or maybe 
+        # just don't expose SymbolicOperator to users
+        
+        return cls(term=None)
+
+    @classmethod
+    def identity(cls):
+        """
+        Returns:
+            multiplicative_identity (FermionOperator):
+                A symbolic operator u with the property that u*x = x*u = x for
+                all fermion operators x.
+        """
+        return cls(term=())
+
+    def compress(self, abs_tol=EQ_TOLERANCE):
         """
         Eliminates all terms with coefficients close to zero and removes
         imaginary parts of coefficients that are close to zero.
@@ -96,7 +119,8 @@ class SymbolicOperator(object):
         """
         if not isinstance(multiplier, (int, float, complex)):
             raise TypeError(
-                'Object of invalid type cannot multiply with SymbolicOperator.')
+                'Object of invalid type cannot multiply with ' 
+                + type(self) + '.')
         return self * multiplier
 
     def __truediv__(self, divisor):
@@ -117,7 +141,8 @@ class SymbolicOperator(object):
 
         """
         if not isinstance(divisor, (int, float, complex)):
-            raise TypeError('Cannot divide SymbolicOperator by non-scalar type.')
+            raise TypeError('Cannot divide ' + type(self) 
+                    + ' by non-scalar type.')
         return self * (1.0 / divisor)
 
     def __div__(self, divisor):
@@ -126,7 +151,8 @@ class SymbolicOperator(object):
 
     def __itruediv__(self, divisor):
         if not isinstance(divisor, (int, float, complex)):
-            raise TypeError('Cannot divide SymbolicOperator by non-scalar type.')
+            raise TypeError('Cannot divide ' + type(self) 
+                    + ' by non-scalar type.')
         self *= (1.0 / divisor)
         return self
 

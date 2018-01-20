@@ -312,25 +312,6 @@ class FermionOperator(SymbolicOperator):
                         'Invalid action in FermionOperator: '
                         'Must be 0 (lowering) or 1 (raising).')
 
-    @staticmethod
-    def zero():
-        """
-        Returns:
-            additive_identity (FermionOperator):
-                A fermion operator o with the property that o+x = x+o = x for
-                all fermion operators x.
-        """
-        return FermionOperator(term=None)
-
-    @staticmethod
-    def identity():
-        """
-        Returns:
-            multiplicative_identity (FermionOperator):
-                A fermion operator u with the property that u*x = x*u = x for
-                all fermion operators x.
-        """
-        return FermionOperator(term=())
 
     def is_normal_ordered(self):
         """Return whether or not term is in normal order.
