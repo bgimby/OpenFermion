@@ -28,9 +28,41 @@ class SymbolicOperatorError(Exception):
 
 class SymbolicOperator(object):
     """
+    The base class for QubitOperator and FermionOperator. All methods defined 
+    here can be accessed from FermionOperator or QubitOperator objects. 
+    This is an abstract class and objects of this type cannot be created,
+    only those of subclasses.
+
+    Subclasses are sums of terms of operators for a particular category of
+    particle. Subclasses support addition and multiplication with objects of 
+    the same type.
+
+    Attributes:
+        terms (dict):
+            **key** (tuple of tuples): Each tuple represents a fermion term,
+            i.e. a tensor product of fermion ladder operators with a
+            coefficient. The first element is an integer indicating the
+            mode on which a ladder operator acts and the second element is
+            a bool, either '0' indicating annihilation, or '1' indicating
+            creation in that mode; for example, '2^ 5' is ((2, 1), (5, 0)).
+            **value** (complex float): The coefficient of term represented by
+            key.
     """
+
     @abstractmethod
     def __init__(self):
+        pass
+
+    @abstractmethod
+    def __imul__(self):
+        pass
+    
+    @abstractmethod
+    def __str__(self):
+        pass
+    
+    @abstractmethod
+    def __repr__(self):
         pass
 
     @classmethod
