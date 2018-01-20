@@ -404,7 +404,6 @@ class FermionOperator(SymbolicOperator):
             raise TypeError('Cannot in-place multiply term of invalid type '
                             'to FermionOperator.')
 
-
     def __pow__(self, exponent):
         """Exponentiate the FermionOperator.
 

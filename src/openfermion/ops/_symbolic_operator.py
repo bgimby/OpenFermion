@@ -15,6 +15,7 @@ import copy
 import itertools
 
 import numpy
+from abc import abstractmethod
 
 
 EQ_TOLERANCE = 1e-12
@@ -28,6 +29,9 @@ class SymbolicOperatorError(Exception):
 class SymbolicOperator(object):
     """
     """
+    @abstractmethod
+    def __init__(self):
+        pass
 
     @classmethod
     def zero(cls):
