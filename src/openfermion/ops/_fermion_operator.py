@@ -312,7 +312,6 @@ class FermionOperator(SymbolicOperator):
                         'Invalid action in FermionOperator: '
                         'Must be 0 (lowering) or 1 (raising).')
 
-
     def is_normal_ordered(self):
         """Return whether or not term is in normal order.
 
@@ -371,7 +370,6 @@ class FermionOperator(SymbolicOperator):
 
     def __repr__(self):
         return str(self)
-
 
     def __imul__(self, multiplier):
         """In-place multiply (*=) terms with scalar or FermionOperator.

@@ -177,7 +177,6 @@ class QubitOperator(SymbolicOperator):
         else:
             raise ValueError('term specified incorrectly.')
 
-
     def __imul__(self, multiplier):
         """
         In-place multiply (*=) terms with scalar or QubitOperator.

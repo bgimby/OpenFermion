@@ -21,20 +21,19 @@ from abc import abstractmethod
 EQ_TOLERANCE = 1e-12
 
 
-
 class SymbolicOperatorError(Exception):
     pass
 
 
 class SymbolicOperator(object):
     """
-    The base class for QubitOperator and FermionOperator. All methods defined 
-    here can be accessed from FermionOperator or QubitOperator objects. 
+    The base class for QubitOperator and FermionOperator. All methods defined
+    here can be accessed from FermionOperator or QubitOperator objects.
     This is an abstract class and objects of this type cannot be created,
     only those of subclasses.
 
     Subclasses are sums of terms of operators for a particular category of
-    particle. Subclasses support addition and multiplication with objects of 
+    particle. Subclasses support addition and multiplication with objects of
     the same type.
 
     Attributes:
@@ -56,11 +55,11 @@ class SymbolicOperator(object):
     @abstractmethod
     def __imul__(self):
         pass
-    
+
     @abstractmethod
     def __str__(self):
         pass
-    
+
     @abstractmethod
     def __repr__(self):
         pass
@@ -73,9 +72,9 @@ class SymbolicOperator(object):
                 A symbolic operator o with the property that o+x = x+o = x for
                 all fermion operators x.
         """
-        # Maybe throw a TypeError if called using SymbolicOperator? Or maybe 
+        # Maybe throw a TypeError if called using SymbolicOperator? Or maybe
         # just don't expose SymbolicOperator to users
-        
+
         return cls(term=None)
 
     @classmethod
@@ -154,7 +153,7 @@ class SymbolicOperator(object):
             return product
         else:
             raise TypeError(
-                'Object of invalid type cannot multiply with ' + 
+                'Object of invalid type cannot multiply with ' +
                 type(self) + '.')
 
     def __iadd__(self, addend):
@@ -173,10 +172,10 @@ class SymbolicOperator(object):
             for term in addend.terms:
                 if term in self.terms:
                     if abs(addend.terms[term] +
-                           self.terms[term]) < EQ_TOLERANCE:
-                        del self.terms[term]
-                    else:
+                           self.terms[term]) > 0:
                         self.terms[term] += addend.terms[term]
+                    else:
+                        del self.terms[term]
                 else:
                     self.terms[term] = addend.terms[term]
         else:
@@ -218,8 +217,8 @@ class SymbolicOperator(object):
                 else:
                     self.terms[term] = -subtrahend.terms[term]
         else:
-            raise TypeError('Cannot subtract invalid type from ' + 
-                    type(self) + '.')
+            raise TypeError('Cannot subtract invalid type from ' +
+                            type(self) + '.')
         return self
 
     def __sub__(self, subtrahend):
@@ -253,8 +252,8 @@ class SymbolicOperator(object):
         """
         if not isinstance(multiplier, (int, float, complex)):
             raise TypeError(
-                'Object of invalid type cannot multiply with ' 
-                + type(self) + '.')
+                'Object of invalid type cannot multiply with ' +
+                type(self) + '.')
         return self * multiplier
 
     def __truediv__(self, divisor):
@@ -275,8 +274,8 @@ class SymbolicOperator(object):
 
         """
         if not isinstance(divisor, (int, float, complex)):
-            raise TypeError('Cannot divide ' + type(self) 
-                    + ' by non-scalar type.')
+            raise TypeError('Cannot divide ' + type(self) +
+                            ' by non-scalar type.')
         return self * (1.0 / divisor)
 
     def __div__(self, divisor):
@@ -285,8 +284,8 @@ class SymbolicOperator(object):
 
     def __itruediv__(self, divisor):
         if not isinstance(divisor, (int, float, complex)):
-            raise TypeError('Cannot divide ' + type(self) 
-                    + ' by non-scalar type.')
+            raise TypeError('Cannot divide ' + type(self) +
+                            ' by non-scalar type.')
         self *= (1.0 / divisor)
         return self
 
